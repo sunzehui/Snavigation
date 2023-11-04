@@ -1,11 +1,12 @@
 import { defineStore } from "pinia";
-import defaultShortCut from "@/assets/defaultShortCut";
+// import defaultShortCut from "@/../public/defaultShortCut";
+
 
 const useSiteDataStore = defineStore("siteData", {
   state: () => {
     return {
       // 捷径数据
-      shortcutData: defaultShortCut,
+      shortcutData: [],
     };
   },
   actions: {

@@ -143,6 +143,7 @@ body {
     min-width: min(24rem, 100vw);
     border-radius: 8px;
     box-shadow: none;
+    top: -100px;
     --n-color-modal: var(--main-background-light-color);
   }
 }

@@ -34,3 +34,10 @@ export const getSearchSuggestions = async (keyWord) => {
     return null;
   }
 };
+
+export const getDefalutShortCut = () => {
+  return axios({
+    method: "GET",
+    url: "/defaultShortCut.json",
+  });
+}

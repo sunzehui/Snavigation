@@ -12,7 +12,7 @@
         >
           <n-grid-item
             v-for="item in shortcutData"
-            :key="item"
+            :key="item.name"
             class="shortcut-item"
             @contextmenu="shortCutContextmenu($event, item)"
             @click="shortCutJump(item.url)"
@@ -58,15 +58,6 @@
       :model="addShortcutValue"
       :label-width="80"
     >
-      <n-form-item label="ID" path="id">
-        <n-input-number
-          disabled
-          placeholder="请输入ID"
-          v-model:value="addShortcutValue.id"
-          style="width: 100%"
-          :show-button="false"
-        />
-      </n-form-item>
       <n-form-item label="捷径名称" path="name">
         <n-input
           clearable
@@ -130,10 +121,17 @@ import { storeToRefs } from "pinia";
 import { siteStore, setStore } from "@/stores";
 import SvgIcon from "@/components/SvgIcon.vue";
 import identifyInput from "@/utils/identifyInput";
+import { getDefalutShortCut } from "@/api";
+import { onMounted } from "vue";
 
 const set = setStore();
 const site = siteStore();
 const { shortcutData } = storeToRefs(site);
+
+onMounted(async ()=>{
+  const defaultShortCut = await getDefalutShortCut()
+  site.setShortcutData(defaultShortCut)
+})
 
 // 图标渲染
 const renderIcon = (icon) => {
@@ -147,17 +145,10 @@ const addShortcutRef = ref(null);
 const addShortcutModalShow = ref(false);
 const addShortcutModalType = ref(false); // false 添加 / true 编辑
 const addShortcutValue = ref({
-  id: null,
   name: "",
   url: "",
 });
 const addShortcutRules = {
-  id: {
-    required: true,
-    type: "number",
-    message: "请输入合法 ID",
-    trigger: ["input", "blur"],
-  },
   name: {
     required: true,
     message: "请输入名称",
@@ -198,7 +189,6 @@ const shortCutDropdownOptions = [
 const addShortcutClose = () => {
   addShortcutModalShow.value = false;
   addShortcutValue.value = {
-    id: null,
     name: "",
     url: "",
   };
@@ -206,13 +196,8 @@ const addShortcutClose = () => {
 
 // 开启添加捷径
 const addShortcutModalOpen = () => {
-  // 生成 ID
-  const shortcutMaxID = shortcutData.value.reduce((max, item) => {
-    return item.id > max ? item.id : max;
-  }, -1);
   // 生成表单数据
   addShortcutValue.value = {
-    id: shortcutMaxID + 1,
     name: "",
     url: "",
   };
@@ -240,7 +225,6 @@ const addOrEditShortcuts = () => {
         return false;
       }
       shortcutData.value.push({
-        id: addShortcutValue.value.id,
         name: addShortcutValue.value.name,
         url: addShortcutValue.value.url,
       });
@@ -267,24 +251,21 @@ const addOrEditShortcuts = () => {
 
 // 删除捷径
 const delShortcuts = () => {
-  const deleteId = addShortcutValue.value.id;
-  if (typeof deleteId === "number") {
-    const indexToRemove = shortcutData.value.findIndex(
-      (item) => item.id === deleteId
-    );
-    if (indexToRemove !== -1) {
-      shortcutData.value.splice(indexToRemove, 1);
-      // 将后续元素的 id 前移一位
-      for (let i = indexToRemove; i < shortcutData.value.length; i++) {
-        shortcutData.value[i].id = i;
-      }
-      $message.success("捷径删除成功");
-      return true;
-    }
-    $message.error("捷径删除失败，请重试");
-  } else {
-    $message.error("捷径删除失败，请重试");
+  const deleteName = addShortcutValue.value.name;
+  const indexToRemove = shortcutData.value.findIndex(
+    (item) => item.name === deleteName
+  );
+  if (indexToRemove === -1) {
+    return $message.error("捷径删除失败，请重试");
   }
+  shortcutData.value.splice(indexToRemove, 1);
+  // 将后续元素的 id 前移一位
+  // for (let i = indexToRemove; i < shortcutData.value.length; i++) {
+  //   shortcutData.value[i].id = i;
+  // }
+  $message.success("捷径删除成功");
+  return true;
+  
 };
 
 // 开启右键菜单
@@ -292,8 +273,8 @@ const shortCutContextmenu = (e, data) => {
   e.preventDefault();
   shortCutDropdownShow.value = false;
   // 写入弹窗数据
-  const { id, name, url } = data;
-  addShortcutValue.value = { id, name, url };
+  const { name, url } = data;
+  addShortcutValue.value = {  name, url };
   nextTick().then(() => {
     shortCutDropdownShow.value = true;
     shortCutDropdownX.value = e.clientX;
