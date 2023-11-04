@@ -4,7 +4,7 @@ import vue from "@vitejs/plugin-vue";
 import path from "path";
 import viteCompression from "vite-plugin-compression";
 import legacy from '@vitejs/plugin-legacy'
-import browserslistToEsbuild from 'browserslist-to-esbuild'
+
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
@@ -77,7 +77,6 @@ export default defineConfig({
   },
   build: {
     minify: "terser",
-    target: browserslistToEsbuild(),
     terserOptions: {
       compress: {
         // 生产环境时移除 console
