@@ -61,7 +61,7 @@
       </main>
       <div v-else id="loading">
         <img src="/icon/logo.png" alt="logo" class="logo" />
-        <span class="tip">开发中</span>
+        <span class="tip">加载中...</span>
       </div>
     </Transition>
   </Provider>
