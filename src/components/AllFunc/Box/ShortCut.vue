@@ -129,8 +129,11 @@ const site = siteStore();
 const { shortcutData } = storeToRefs(site);
 
 onMounted(async ()=>{
-  const defaultShortCut = await getDefalutShortCut()
-  site.setShortcutData(defaultShortCut)
+  // 首次加载需读取默认数据
+  if(!shortcutData.value.length){
+    const defaultShortCut = await getDefalutShortCut()
+    site.setShortcutData(defaultShortCut)
+  }
 })
 
 // 图标渲染
