@@ -1,109 +1,6 @@
-<template>
-  <!-- 捷径 -->
-  <Transition name="fade" mode="out-in">
-    <div v-if="shortcutData[0]" class="shortcut">
-      <n-scrollbar class="scrollbar">
-        <n-grid
-          class="all-shortcut"
-          responsive="screen"
-          cols="2 s:3 m:4 l:5"
-          :x-gap="10"
-          :y-gap="10"
-        >
-          <n-grid-item
-            v-for="item in shortcutData"
-            :key="item.name"
-            class="shortcut-item"
-            @contextmenu="shortCutContextmenu($event, item)"
-            @click="shortCutJump(item.url)"
-          >
-            <span class="name">{{ item.name }}</span>
-          </n-grid-item>
-          <n-grid-item
-            class="shortcut-item"
-            @contextmenu="
-              (e) => {
-                e.preventDefault();
-              }
-            "
-            @click="addShortcutModalOpen"
-          >
-            <SvgIcon iconName="icon-add" />
-            <span class="name">添加捷径</span>
-          </n-grid-item>
-        </n-grid>
-      </n-scrollbar>
-    </div>
-    <div v-else class="not-shortcut">
-      <span class="tip">暂无捷径，去添加吧</span>
-      <n-button strong secondary @click="addShortcutModalOpen">
-        <template #icon>
-          <SvgIcon iconName="icon-add" />
-        </template>
-        添加捷径
-      </n-button>
-    </div>
-  </Transition>
-  <!-- 添加捷径 -->
-  <n-modal
-    preset="card"
-    v-model:show="addShortcutModalShow"
-    :title="`${addShortcutModalType ? '编辑' : '添加'}捷径`"
-    :bordered="false"
-    @mask-click="addShortcutClose"
-  >
-    <n-form
-      ref="addShortcutRef"
-      :rules="addShortcutRules"
-      :model="addShortcutValue"
-      :label-width="80"
-    >
-      <n-form-item label="捷径名称" path="name">
-        <n-input
-          clearable
-          show-count
-          maxlength="14"
-          v-model:value="addShortcutValue.name"
-          placeholder="请输入捷径名称"
-        />
-      </n-form-item>
-      <n-form-item label="站点链接" path="url">
-        <n-input
-          clearable
-          v-model:value="addShortcutValue.url"
-          placeholder="请输入站点链接"
-        />
-      </n-form-item>
-    </n-form>
-    <template #footer>
-      <n-space justify="end">
-        <n-button strong secondary @click="addShortcutClose"> 取消 </n-button>
-        <n-button strong secondary @click="addOrEditShortcuts">
-          {{ addShortcutModalType ? "编辑" : "添加" }}
-        </n-button>
-      </n-space>
-    </template>
-  </n-modal>
-  <!-- 捷径右键菜单 -->
-  <n-dropdown
-    placement="bottom-start"
-    trigger="manual"
-    size="large"
-    :x="shortCutDropdownX"
-    :y="shortCutDropdownY"
-    :options="shortCutDropdownOptions"
-    :show="shortCutDropdownShow"
-    :on-clickoutside="
-      () => {
-        shortCutDropdownShow = false;
-      }
-    "
-    @select="shortCutDropdownSelect"
-  />
-</template>
-
-<script setup>
+<script lang="ts" setup>
 import { ref, nextTick, h } from "vue";
+import LinkAdd from '@/components/LinkPanel/Link/Add.vue'
 import {
   NButton,
   NScrollbar,
@@ -117,24 +14,17 @@ import {
   NInputNumber,
   NDropdown,
 } from "naive-ui";
-import { storeToRefs } from "pinia";
 import { siteStore, setStore } from "@/stores";
 import SvgIcon from "@/components/SvgIcon.vue";
 import identifyInput from "@/utils/identifyInput";
-import { getDefalutShortCut } from "@/api";
 import { onMounted } from "vue";
 
+const props = defineProps<{
+  list: any
+}>()
+const { $message, $dialog } = window
 const set = setStore();
-const site = siteStore();
-const { shortcutData } = storeToRefs(site);
-
-onMounted(async ()=>{
-  // 首次加载需读取默认数据
-  if(!shortcutData.value.length){
-    const defaultShortCut = await getDefalutShortCut()
-    site.setShortcutData(defaultShortCut)
-  }
-})
+const shortcutData = computed(() => props.list)
 
 // 图标渲染
 const renderIcon = (icon) => {
@@ -144,32 +34,13 @@ const renderIcon = (icon) => {
 };
 
 // 添加捷径数据
-const addShortcutRef = ref(null);
 const addShortcutModalShow = ref(false);
 const addShortcutModalType = ref(false); // false 添加 / true 编辑
-const addShortcutValue = ref({
+const linkFromValue = ref({
   name: "",
   url: "",
 });
-const addShortcutRules = {
-  name: {
-    required: true,
-    message: "请输入名称",
-    trigger: ["input", "blur"],
-  },
-  url: {
-    required: true,
-    validator(rule, value) {
-      if (!value) {
-        return new Error("请输入站点链接");
-      } else if (identifyInput(value) !== "url") {
-        return new Error("请检查是否为正确的网址");
-      }
-      return true;
-    },
-    trigger: ["input", "blur"],
-  },
-};
+
 
 // 右键菜单数据
 const shortCutDropdownX = ref(0);
@@ -188,19 +59,12 @@ const shortCutDropdownOptions = [
   },
 ];
 
-// 关闭弹窗
-const addShortcutClose = () => {
-  addShortcutModalShow.value = false;
-  addShortcutValue.value = {
-    name: "",
-    url: "",
-  };
-};
+
 
 // 开启添加捷径
 const addShortcutModalOpen = () => {
   // 生成表单数据
-  addShortcutValue.value = {
+  linkFromValue.value = {
     name: "",
     url: "",
   };
@@ -208,67 +72,22 @@ const addShortcutModalOpen = () => {
   addShortcutModalShow.value = true;
 };
 
-// 添加或编辑捷径
-const addOrEditShortcuts = () => {
-  addShortcutRef.value?.validate((errors) => {
-    if (errors) {
-      $message.error("请检查您的输入");
-      return false;
-    }
-    // 新增捷径
-    if (!addShortcutModalType.value) {
-      // 是否重复
-      const isDuplicate = shortcutData.value?.some(
-        (item) =>
-          item.name === addShortcutValue.value.name ||
-          item.url === addShortcutValue.value.url
-      );
-      if (isDuplicate) {
-        $message.error("新增名称或链接与已有捷径重复");
-        return false;
-      }
-      shortcutData.value.push({
-        name: addShortcutValue.value.name,
-        url: addShortcutValue.value.url,
-      });
-      $message.success("捷径添加成功");
-      addShortcutClose();
-      return true;
-    } else {
-      // 编辑捷径
-      const index = shortcutData.value.findIndex(
-        (item) => item.id === addShortcutValue.value.id
-      );
-      if (index === -1) {
-        $message.error("捷径中不存在该项，请重试");
-        return false;
-      }
-      shortcutData.value[index].name = addShortcutValue.value.name;
-      shortcutData.value[index].url = addShortcutValue.value.url;
-      $message.success("捷径编辑成功");
-      addShortcutClose();
-      return true;
-    }
-  });
-};
+
 
 // 删除捷径
 const delShortcuts = () => {
-  const deleteName = addShortcutValue.value.name;
+  const deleteName = linkFromValue.value.name;
   const indexToRemove = shortcutData.value.findIndex(
     (item) => item.name === deleteName
   );
   if (indexToRemove === -1) {
-    return $message.error("捷径删除失败，请重试");
+    return window.$message.error("捷径删除失败，请重试");
   }
-  shortcutData.value.splice(indexToRemove, 1);
-  // 将后续元素的 id 前移一位
-  // for (let i = indexToRemove; i < shortcutData.value.length; i++) {
-  //   shortcutData.value[i].id = i;
-  // }
-  $message.success("捷径删除成功");
+
+  siteStore().deleteThisCategorysLink(deleteName);
+  window.$message.success("捷径删除成功");
   return true;
-  
+
 };
 
 // 开启右键菜单
@@ -277,7 +96,7 @@ const shortCutContextmenu = (e, data) => {
   shortCutDropdownShow.value = false;
   // 写入弹窗数据
   const { name, url } = data;
-  addShortcutValue.value = {  name, url };
+  linkFromValue.value = { name, url };
   nextTick().then(() => {
     shortCutDropdownShow.value = true;
     shortCutDropdownX.value = e.clientX;
@@ -297,7 +116,7 @@ const shortCutDropdownSelect = (key) => {
     case "delete":
       $dialog.warning({
         title: "删除捷径",
-        content: `确认删除 ${addShortcutValue.value.name} 捷径？此操作将无法恢复！`,
+        content: `确认删除 ${linkFromValue.value.name} 捷径？此操作将无法恢复！`,
         positiveText: "删除",
         negativeText: "取消",
         onPositiveClick: () => {
@@ -322,13 +141,60 @@ const shortCutJump = (url) => {
 };
 </script>
 
+
+<template>
+  <div>
+    <!-- 捷径 -->
+    <Transition name="fade" mode="out-in">
+      <div v-if="shortcutData?.length" class="shortcut">
+        <n-scrollbar class="scrollbar">
+          <n-grid class="all-shortcut" responsive="screen" cols="2 s:3 m:4 l:5" :x-gap="10" :y-gap="10">
+            <n-grid-item v-for="item in shortcutData" :key="item.name" class="shortcut-item"
+              @contextmenu="shortCutContextmenu($event, item)" @click="shortCutJump(item.url)">
+              <span class="name">{{ item.name }}</span>
+            </n-grid-item>
+            <n-grid-item class="shortcut-item" @contextmenu="
+              (e) => {
+                e.preventDefault();
+              }
+            " @click="addShortcutModalOpen">
+              <SvgIcon iconName="icon-add" />
+              <span class="name">添加捷径</span>
+            </n-grid-item>
+          </n-grid>
+        </n-scrollbar>
+      </div>
+      <div v-else-if="!shortcutData?.length" class="not-shortcut">
+        <span class="tip">暂无捷径，去添加吧</span>
+        <n-button strong secondary @click="addShortcutModalOpen">
+          <template #icon>
+            <SvgIcon iconName="icon-add" />
+          </template>
+          添加捷径
+        </n-button>
+      </div>
+    </Transition>
+    <!-- 添加捷径 -->
+    <LinkAdd v-model:show="addShortcutModalShow" v-model:value="linkFromValue" :isEdit="addShortcutModalType" />
+    <!-- 捷径右键菜单 -->
+    <n-dropdown placement="bottom-start" trigger="manual" size="large" :x="shortCutDropdownX" :y="shortCutDropdownY"
+      :options="shortCutDropdownOptions" :show="shortCutDropdownShow" :on-clickoutside="
+        () => {
+          shortCutDropdownShow = false;
+        }
+      " @select="shortCutDropdownSelect" />
+  </div>
+</template>
+
 <style lang="scss" scoped>
 .shortcut {
   width: 100%;
   height: 100%;
+
   .all-shortcut {
     padding: 20px;
     box-sizing: border-box;
+
     .shortcut-item {
       cursor: pointer;
       height: 60px;
@@ -340,32 +206,38 @@ const shortCutJump = (url) => {
       border-radius: 8px;
       font-size: 16px;
       transition: background-color 0.3s, box-shadow 0.3s;
+
       .i-icon {
         width: 1rem;
         margin-right: 6px;
         font-size: 20px;
         opacity: 1;
       }
+
       .name {
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
       }
+
       &:hover {
         background-color: var(--main-background-hover-color);
         box-shadow: 0 0 0px 2px var(--main-background-hover-color);
       }
+
       &:active {
         box-shadow: none;
       }
     }
   }
 }
+
 .not-shortcut {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+
   .tip {
     font-size: 24px;
     margin-bottom: 20px;

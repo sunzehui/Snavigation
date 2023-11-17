@@ -286,7 +286,6 @@ import {
 } from "naive-ui";
 import { storeToRefs } from "pinia";
 import { setStore, statusStore } from "@/stores";
-import identifyInput from "@/utils/identifyInput";
 
 const set = setStore();
 const status = statusStore();

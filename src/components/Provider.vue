@@ -19,7 +19,7 @@
   </n-config-provider>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import { defineComponent } from "vue";
 import {
   zhCN,

@@ -6,3 +6,10 @@ import useStatusDataStore from "@/stores/statusData";
 export const setStore = () => useSetDataStore();
 export const siteStore = () => useSiteDataStore();
 export const statusStore = () => useStatusDataStore();
+
+
+export const getAllStories = () => {
+  return [
+    setStore(), siteStore(), statusStore()
+  ]
+}
