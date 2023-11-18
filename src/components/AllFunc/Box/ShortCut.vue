@@ -12,11 +12,11 @@ import {
   NInput,
   NInputNumber,
   NDropdown,
+  NIcon,
 } from "naive-ui";
 import { siteStore, setStore } from "@/stores";
 import SvgIcon from "@/components/SvgIcon.vue";
-import identifyInput from "@/utils/identifyInput";
-import { onMounted } from "vue";
+import { LinkOutline } from '@vicons/ionicons5'
 
 const props = defineProps<{
   list: any
@@ -148,9 +148,15 @@ const shortCutJump = (url) => {
       <div v-if="shortcutData?.length" class="shortcut">
         <n-scrollbar class="scrollbar">
           <n-grid class="all-shortcut" responsive="screen" cols="2 s:3 m:4 l:5" :x-gap="10" :y-gap="10">
-            <n-grid-item v-for="item in shortcutData" :key="item.name" class="shortcut-item"
+            <n-grid-item style="" v-for="item in shortcutData" :key="item.name" class="shortcut-item"
               @contextmenu="shortCutContextmenu($event, item)" @click="shortCutJump(item.url)">
-              <span class="name">{{ item.name }}</span>
+              <n-icon class="i-icon">
+                <img v-if="item.icon" :src="item.icon" style="height: 1.3rem;width: 1.3rem;" alt="">
+                <LinkOutline v-else-if="!item.icon" />
+              </n-icon>
+              <n-ellipsis style="max-width: 240px" class="name">
+                {{ item.name }}
+              </n-ellipsis>
             </n-grid-item>
             <n-grid-item class="shortcut-item" @contextmenu="
               (e) => {
@@ -158,6 +164,7 @@ const shortCutJump = (url) => {
               }
             " @click="addShortcutModalOpen">
               <SvgIcon iconName="icon-add" />
+
               <span class="name">添加捷径</span>
             </n-grid-item>
           </n-grid>
@@ -200,7 +207,7 @@ const shortCutJump = (url) => {
       padding: 0 10px;
       display: flex;
       align-items: center;
-      justify-content: center;
+      // justify-content: center;
       background-color: var(--main-background-light-color);
       border-radius: 8px;
       font-size: 16px;

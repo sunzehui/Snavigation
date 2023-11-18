@@ -16,6 +16,7 @@ declare module 'vue' {
     LinkAdd: typeof import('./src/components/LinkPanel/Link/LinkAdd.vue')['default']
     NButton: typeof import('naive-ui')['NButton']
     NCard: typeof import('naive-ui')['NCard']
+    NEllipsis: typeof import('naive-ui')['NEllipsis']
     NFormItem: typeof import('naive-ui')['NFormItem']
     NH6: typeof import('naive-ui')['NH6']
     NInput: typeof import('naive-ui')['NInput']

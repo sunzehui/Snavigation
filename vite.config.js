@@ -112,12 +112,12 @@ export default defineConfig({
             if (id.includes("node_modules")) {
               let name = id.split("node_modules/")[1].split("/");
 
-              if (name[0].includes('naive-ui') ){
+              if (name[0].includes('naive-ui')) {
                 return 'naive-ui'
-              }else{
+              } else {
                 return 'vendor'
               }
-           }
+            }
           } catch (error) {
             console.error(error);
           }
