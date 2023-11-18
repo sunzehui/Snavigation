@@ -136,7 +136,7 @@ const importBookmarkFromEdge = async () => {
       </div>
       <n-button strong secondary @click="resetSite"> 重置 </n-button>
     </n-card>
-    <n-h6 prefix="bar"> 备份 </n-h6>
+    <n-h6 prefix="bar"> 迁移 </n-h6>
     <n-card class="set-item">
       <div class="name">
         <span class="title">站点备份</span>
@@ -144,7 +144,6 @@ const importBookmarkFromEdge = async () => {
       </div>
       <n-button strong secondary @click="backupSite"> 备份 </n-button>
     </n-card>
-    <n-h6 prefix="bar"> 导入 </n-h6>
     <n-card class="set-item">
       <div class="name">
         <span class="title">数据恢复</span>
@@ -155,6 +154,7 @@ const importBookmarkFromEdge = async () => {
         恢复
       </n-button>
     </n-card>
+    <n-h6 prefix="bar"> 导入 </n-h6>
     <n-card class="set-item">
       <div class="name">
         <span class="title">从Edge导入</span>
