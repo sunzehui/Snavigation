@@ -1,5 +1,5 @@
 import { parseBookmark } from '@/utils/bookmark'
-import { deleteCategory, deleteLink, getAllLink, saveLink } from "@/api/link";
+import { batchSaveLink, deleteCategory, deleteLink, getAllLink, recoverLinks, saveLink } from "@/api/link";
 import { LinkPayload } from "@/lib/db";
 import { initial, keys } from "lodash-es";
 import { defineStore } from "pinia";
@@ -9,15 +9,11 @@ const useSiteDataStore = defineStore("siteData", {
   state: () => {
     return {
       // 捷径数据
-      shortcutData: [],
       links: [],
       selectedCategory: null
     };
   },
   actions: {
-    setShortcutData(value) {
-      this.shortcutData = value;
-    },
     setLinks(value) {
       this.links = value
     },
@@ -53,7 +49,21 @@ const useSiteDataStore = defineStore("siteData", {
     async deleteThisCategorysLink(linkName: string) {
       await deleteLink(this.selectedCategory, linkName)
       await this.initLinks()
-    }
+    },
+    // 恢复数据
+    async recoverSiteData(newState: any) {
+      let isSuccess = false;
+      try {
+        this.selectedCategory = newState.selectedCategory;
+        await recoverLinks(newState.links)
+        await this.initLinks();
+        isSuccess = true;
+      } catch (error) {
+        console.error("站点数据恢复时处理失败：", error);
+        isSuccess = false;
+      }
+      return isSuccess;
+    },
   },
   getters: {
     categories: (state) => {

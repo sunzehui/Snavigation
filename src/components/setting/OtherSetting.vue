@@ -1,8 +1,14 @@
 <script lang="ts" setup>
 import { batchSaveLink, saveLink } from '@/api/link';
+import { db } from '@/lib/db';
 import { setStore, siteStore } from '@/stores';
 import { parseBookmark } from '@/utils/bookmark';
 import { downloadJSON } from '@/utils/file';
+
+interface BackupData {
+  setting: any
+  site: any
+}
 
 const recoverRef = ref(null);
 const importFromEdgeRef = ref<HTMLInputElement>(null)
@@ -17,8 +23,11 @@ const resetSite = () => {
     content: "确认重置站点为默认状态？你的全部数据以及自定义设置都将丢失！",
     positiveText: "重置",
     negativeText: "取消",
-    onPositiveClick: () => {
+    onPositiveClick: async () => {
       localStorage.clear();
+      set.$reset();
+      siteStore().$reset();
+      await db.delete()
       $message.info("站点重置成功，即将刷新");
       setTimeout(() => {
         window.location.reload();
@@ -33,7 +42,11 @@ const backupSite = () => {
     const date = new Date();
     const dateString = date.toISOString().replace(/[:.]/g, "-");
     const fileName = `Snavigation_Backup_${dateString}.json`;
-    const jsonData = set.$state; // Assuming `set.$state` is your JSON data
+    const backupData: BackupData = {
+      setting: set.$state,
+      site: siteStore().$state,
+    }
+    const jsonData = backupData; // Assuming `set.$state` is your JSON data
     downloadJSON(jsonData, fileName);
     // 备份完成
     $message.success("站点备份成功");
@@ -53,7 +66,7 @@ const recoverSite = async () => {
     }
     const file = fileInput.files[0];
     const jsonData = await file.text();
-    const data = JSON.parse(jsonData);
+    const backupData = JSON.parse(jsonData) as BackupData;
     // 恢复数据
     $dialog.warning({
       title: "站点恢复",
@@ -61,8 +74,9 @@ const recoverSite = async () => {
       positiveText: "恢复",
       negativeText: "取消",
       onPositiveClick: async () => {
-        const isSuccess = await set.recoverSiteData(data);
-        if (isSuccess) {
+        const isSettingRecovered = await set.recoverSiteData(backupData.setting);
+        const isSiteRecovered = await siteStore().recoverSiteData(backupData.site);
+        if (isSettingRecovered && isSiteRecovered) {
           $message.info("站点恢复成功，即将刷新");
           setTimeout(() => {
             window.location.reload();

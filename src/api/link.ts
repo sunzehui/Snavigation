@@ -40,10 +40,12 @@ export async function batchSaveLink(category: string, payload: LinkPayload[]) {
     ]
   })
 }
+export async function recoverLinks(categories: LinkCategory[]) {
+  return db.links.bulkPut(categories)
+}
 
 export async function deleteLink(cate: string, linkName: string) {
   const cateDO = await db.links.where('category').equals(cate).first()
-  console.log("🚀 ~ file: link.ts:29 ~ deleteLink ~ cateDO:", cateDO)
   return db.links.where('category').equals(cate)
     .modify({
       links: cateDO.links.filter((link: LinkPayload) => link.name !== linkName)
