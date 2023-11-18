@@ -25,7 +25,7 @@ const useSiteDataStore = defineStore("siteData", {
       const links = await getAllLink()
       // const text = await axios.get('/bookmark.html')
       // const links = parseBookmark(text)
-      // this.setLinks(links)
+      this.setLinks(links)
       return links
     },
     async init() {
