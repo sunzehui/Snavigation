@@ -142,7 +142,7 @@ const shortCutJump = (url) => {
 
 
 <template>
-  <div>
+  <div style="height: 100%;">
     <!-- 捷径 -->
     <Transition name="fade" mode="out-in">
       <div v-if="shortcutData?.length" class="shortcut">

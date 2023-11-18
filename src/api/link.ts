@@ -14,13 +14,29 @@ export async function saveLink(category: string, payload: LinkPayload) {
     return db.links.add({
       category,
       create_time: +new Date(),
-      links: []
+      links: payload ? [payload] : []
     })
   }
   return db.links.where('category').equals(category).modify({
     links: [
       ...linkCategory.links,
       payload
+    ]
+  })
+}
+export async function batchSaveLink(category: string, payload: LinkPayload[]) {
+  const linkCategory = await db.links.where('category').equals(category).first()
+  if (!linkCategory) {
+    return db.links.add({
+      category,
+      create_time: +new Date(),
+      links: payload || []
+    })
+  }
+  return db.links.where('category').equals(category).modify({
+    links: [
+      ...linkCategory.links,
+      ...payload
     ]
   })
 }

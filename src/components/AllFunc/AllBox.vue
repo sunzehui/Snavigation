@@ -39,7 +39,7 @@ const handleClose = (category) => {
 </script>
 
 <template>
-  <div>
+  <div style="height: 100%;">
     <CategoryAdd v-model="addCategoryModalShow" />
     <n-tabs :addable="addable" :closable="closable" class="all-box" type="card" size="large"
       justify-content="space-evenly" animated v-model:value="selectedCategory" @close="handleClose" @add="handleAdd">

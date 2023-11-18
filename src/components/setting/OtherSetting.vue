@@ -1,8 +1,11 @@
 <script lang="ts" setup>
-import { setStore } from '@/stores';
+import { batchSaveLink, saveLink } from '@/api/link';
+import { setStore, siteStore } from '@/stores';
+import { parseBookmark } from '@/utils/bookmark';
 import { downloadJSON } from '@/utils/file';
 
 const recoverRef = ref(null);
+const importFromEdgeRef = ref<HTMLInputElement>(null)
 
 const set = setStore();
 
@@ -78,6 +81,46 @@ const recoverSite = async () => {
   }
 };
 
+const importBookmarkFromEdge = async () => {
+  try {
+    const fileInput = importFromEdgeRef.value;
+    if (!fileInput?.files.length) {
+      $message.error("请选择从Edge浏览器导出的书签");
+      return false;
+    }
+    const file = fileInput.files[0];
+    const bookmarkText = await file.text();
+    const data = parseBookmark(bookmarkText);
+    const count = data.reduce((total, item) => total + item.links.length, 0);
+    // 恢复数据
+    $dialog.warning({
+      title: "书签导入",
+      content: `确认导入该书签吗，将导入${count}条书签！`,
+      positiveText: "导入",
+      negativeText: "取消",
+      onPositiveClick: async () => {
+        try {
+          const tasks = data.map((item) => {
+            return batchSaveLink(item.category, item.links)
+          })
+          await Promise.all(tasks);
+          siteStore().initLinks();
+          $message.info("导入成功！");
+        } catch (error) {
+          $message.error("导入失败，请重试");
+          console.error("导入失败：", error);
+        }
+      },
+      onNegativeClick: () => {
+        importFromEdgeRef.value.value = null;
+      },
+    });
+  } catch (error) {
+    console.error("站点数据导入失败：", error);
+    $message.error("站点数据导入失败，请重试");
+  }
+}
+
 </script>
 
 <style lang="scss">
@@ -101,7 +144,7 @@ const recoverSite = async () => {
       </div>
       <n-button strong secondary @click="backupSite"> 备份 </n-button>
     </n-card>
-    <n-h6 prefix="bar"> 恢复 </n-h6>
+    <n-h6 prefix="bar"> 导入 </n-h6>
     <n-card class="set-item">
       <div class="name">
         <span class="title">数据恢复</span>
@@ -110,6 +153,16 @@ const recoverSite = async () => {
       <input ref="recoverRef" type="file" style="display: none" accept=".json" @change="recoverSite" />
       <n-button strong secondary @click="recoverRef?.click()">
         恢复
+      </n-button>
+    </n-card>
+    <n-card class="set-item">
+      <div class="name">
+        <span class="title">从Edge导入</span>
+        <span class="tip">从Edge书签导入到本站</span>
+      </div>
+      <input ref="importFromEdgeRef" type="file" style="display: none" accept=".html" @change="importBookmarkFromEdge" />
+      <n-button strong secondary @click="importFromEdgeRef?.click()">
+        导入
       </n-button>
     </n-card>
   </n-scrollbar>

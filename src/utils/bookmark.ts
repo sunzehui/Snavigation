@@ -46,5 +46,5 @@ export function parseBookmark(bookmarkText: string) {
     }
   })
 
-  return bookmarks;
+  return bookmarks as LinkCategory[];
 }
