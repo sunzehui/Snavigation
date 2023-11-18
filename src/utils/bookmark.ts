@@ -41,7 +41,6 @@ export function parseBookmark(bookmarkText: string) {
     if (bookmarkIdx < 0) {
       bookmarks.push(category)
     } else {
-      console.log("🚀 ~ file: bookmark.ts:41 ~ parseBookmark ~ bookmarkIdx:", bookmarkIdx)
       const oldList = bookmarks[bookmarkIdx].links || []
       bookmarks[bookmarkIdx].links = oldList.concat(linkList)
     }

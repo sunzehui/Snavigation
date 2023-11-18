@@ -9,19 +9,12 @@
               <span class="title">主题类别</span>
               <span class="tip">切换全站主题类别</span>
             </div>
-            <n-select
-              class="set"
-              v-model:value="themeType"
-              :options="themeTypeOptions"
-            />
+            <n-select class="set" v-model:value="themeType" :options="themeTypeOptions" />
           </n-card>
-          <n-card
-            class="set-item cover"
-            :content-style="{
-              flexDirection: 'column',
-              alignItems: 'flex-start',
-            }"
-          >
+          <n-card class="set-item cover" :content-style="{
+            flexDirection: 'column',
+            alignItems: 'flex-start',
+          }">
             <div class="desc">
               <div class="name">
                 <span class="title">壁纸偏好</span>
@@ -31,12 +24,7 @@
               </div>
               <n-space>
                 <Transition name="fade" mode="out-in">
-                  <n-button
-                    v-if="backgroundType !== 0"
-                    strong
-                    secondary
-                    @click="changeBackground(0, true)"
-                  >
+                  <n-button v-if="backgroundType !== 0" strong secondary @click="changeBackground(0, true)">
                     恢复默认
                   </n-button>
                 </Transition>
@@ -48,19 +36,9 @@
                 </n-button>
               </n-space>
             </div>
-            <n-grid
-              class="cover-selete"
-              responsive="screen"
-              cols="2 s:3 m:4 l:4"
-              :x-gap="16"
-              :y-gap="16"
-            >
-              <n-grid-item
-                v-for="(item, index) in backgroundTypeArr"
-                :key="index"
-                :class="index === backgroundType ? 'item check' : 'item'"
-                @click="changeBackground(index)"
-              >
+            <n-grid class="cover-selete" responsive="screen" cols="2 s:3 m:4 l:4" :x-gap="16" :y-gap="16">
+              <n-grid-item v-for="(item, index) in backgroundTypeArr" :key="index"
+                :class="index === backgroundType ? 'item check' : 'item'" @click="changeBackground(index)">
                 <span class="name" v-html="item.name" />
               </n-grid-item>
             </n-grid>
@@ -71,16 +49,12 @@
               <span class="title">搜索引擎</span>
               <span class="tip">切换或自定义搜索引擎</span>
             </div>
-            <n-button
-              strong
-              secondary
-              @click="
-                () => {
-                  status.setSiteStatus('focus');
-                  status.setEngineChangeStatus(true);
-                }
-              "
-            >
+            <n-button strong secondary @click="
+              () => {
+                status.setSiteStatus('focus');
+                status.setEngineChangeStatus(true);
+              }
+            ">
               前往调整
             </n-button>
           </n-card>
@@ -96,11 +70,7 @@
               <span class="title">跳转方式</span>
               <span class="tip">全站链接跳转方式</span>
             </div>
-            <n-select
-              class="set"
-              v-model:value="urlJumpType"
-              :options="urlJumpTypeOptions"
-            />
+            <n-select class="set" v-model:value="urlJumpType" :options="urlJumpTypeOptions" />
           </n-card>
         </n-scrollbar>
       </n-tab-pane>
@@ -119,14 +89,7 @@
               <span class="title">壁纸模糊</span>
               <span class="tip">调整壁纸高斯模糊的程度</span>
             </div>
-            <n-slider
-              class="set"
-              v-model:value="backgroundBlur"
-              :step="0.01"
-              :min="0"
-              :max="10"
-              :tooltip="false"
-            />
+            <n-slider class="set" v-model:value="backgroundBlur" :step="0.01" :min="0" :max="10" :tooltip="false" />
           </n-card>
           <n-h6 prefix="bar"> 天气与时间 </n-h6>
           <n-card class="set-item">
@@ -141,11 +104,7 @@
               <span class="title">时钟样式</span>
               <span class="tip">选择一种时钟样式</span>
             </div>
-            <n-select
-              class="set"
-              v-model:value="timeStyle"
-              :options="timeStyleOptions"
-            />
+            <n-select class="set" v-model:value="timeStyle" :options="timeStyleOptions" />
           </n-card>
           <n-card v-if="timeStyle === 'one'" class="set-item">
             <div class="name">
@@ -198,58 +157,14 @@
         </n-scrollbar>
       </n-tab-pane>
       <n-tab-pane name="other" tab="其他设置">
-        <n-scrollbar class="scrollbar">
-          <n-h6 prefix="bar"> 重置 </n-h6>
-          <n-card class="set-item">
-            <div class="name">
-              <span class="title">站点重置</span>
-              <span class="tip">若站点显示异常或出现问题时可尝试此操作</span>
-            </div>
-            <n-button strong secondary @click="resetSite"> 重置 </n-button>
-          </n-card>
-          <n-h6 prefix="bar"> 备份 </n-h6>
-          <n-card class="set-item">
-            <div class="name">
-              <span class="title">站点备份</span>
-              <span class="tip">将站点配置及个性化内容进行备份</span>
-            </div>
-            <n-button strong secondary @click="backupSite"> 备份 </n-button>
-          </n-card>
-          <n-h6 prefix="bar"> 恢复 </n-h6>
-          <n-card class="set-item">
-            <div class="name">
-              <span class="title">数据恢复</span>
-              <span class="tip">将备份的站点内容进行恢复</span>
-            </div>
-            <input
-              ref="recoverRef"
-              type="file"
-              style="display: none"
-              accept=".json"
-              @change="recoverSite"
-            />
-            <n-button strong secondary @click="recoverRef?.click()">
-              恢复
-            </n-button>
-          </n-card>
-        </n-scrollbar>
+        <OtherSetting />
       </n-tab-pane>
     </n-tabs>
     <!-- 自定义壁纸 -->
-    <n-modal
-      preset="card"
-      title="自定义壁纸"
-      v-model:show="customCoverModal"
-      :bordered="false"
-    >
+    <n-modal preset="card" title="自定义壁纸" v-model:show="customCoverModal" :bordered="false">
       <n-form>
         <n-form-item label="自定义壁纸链接">
-          <n-input
-            clearable
-            type="text"
-            v-model:value="customCoverUrl"
-            placeholder="请输入自定义壁纸链接"
-          />
+          <n-input clearable type="text" v-model:value="customCoverUrl" placeholder="请输入自定义壁纸链接" />
         </n-form-item>
       </n-form>
       <template #footer>
@@ -264,7 +179,7 @@
   </div>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import { ref, onMounted } from "vue";
 import {
   NH6,
@@ -286,6 +201,7 @@ import {
 } from "naive-ui";
 import { storeToRefs } from "pinia";
 import { setStore, statusStore } from "@/stores";
+import identifyInput from "@/utils/identifyInput";
 
 const set = setStore();
 const status = statusStore();
@@ -307,7 +223,6 @@ const {
   urlJumpType,
   timeStyle,
 } = storeToRefs(set);
-const recoverRef = ref(null);
 const customCoverModal = ref(false);
 const customCoverUrl = ref("");
 
@@ -321,7 +236,7 @@ const backgroundTypeArr = [
 
 // 主题类别
 const themeTypeOptions = [
-{
+  {
     label: "浅色模式",
     value: "light",
   },
@@ -331,6 +246,7 @@ const themeTypeOptions = [
   },
 ];
 
+const { $dialog, $message } = window
 // 切换壁纸
 const changeBackground = (type, reset = false) => {
   if (reset) {
@@ -386,86 +302,6 @@ const setCustomCover = () => {
   }
 };
 
-// 站点重置
-const resetSite = () => {
-  $dialog.warning({
-    title: "站点重置",
-    content: "确认重置站点为默认状态？你的全部数据以及自定义设置都将丢失！",
-    positiveText: "重置",
-    negativeText: "取消",
-    onPositiveClick: () => {
-      localStorage.clear();
-      $message.info("站点重置成功，即将刷新");
-      setTimeout(() => {
-        window.location.reload();
-      }, 1000);
-    },
-  });
-};
-
-// 站点备份
-const backupSite = () => {
-  try {
-    const date = new Date();
-    const dateString = date.toISOString().replace(/[:.]/g, "-");
-    const fileName = `Snavigation_Backup_${dateString}.json`;
-    const jsonData = JSON.stringify(set.$state);
-    const blob = new Blob([jsonData], { type: "application/json" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = fileName;
-    a.style.display = "none";
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-    // 备份完成
-    $message.success("站点备份成功");
-  } catch (error) {
-    console.error("站点备份失败：", error);
-    $message.error("站点备份失败");
-  }
-};
-
-// 站点恢复
-const recoverSite = async () => {
-  try {
-    const fileInput = recoverRef.value;
-    if (!fileInput?.files.length) {
-      $message.error("请选择要恢复的备份文件");
-      return false;
-    }
-    const file = fileInput.files[0];
-    const jsonData = await file.text();
-    const data = JSON.parse(jsonData);
-    // 恢复数据
-    $dialog.warning({
-      title: "站点恢复",
-      content: "确认使用该恢复文件？你现有的数据以及自定义设置都将被覆盖！",
-      positiveText: "恢复",
-      negativeText: "取消",
-      onPositiveClick: async () => {
-        const isSuccess = await set.recoverSiteData(data);
-        if (isSuccess) {
-          $message.info("站点恢复成功，即将刷新");
-          setTimeout(() => {
-            window.location.reload();
-          }, 1000);
-        } else {
-          $message.error("站点数据恢复失败，请重试");
-        }
-      },
-      onNegativeClick: () => {
-        recoverRef.value.value = null;
-      },
-    });
-  } catch (error) {
-    console.error("站点数据恢复失败：", error);
-    $message.error("站点数据恢复失败，请重试");
-  }
-};
-
 onMounted(() => {
   // 检测是否存在自定义壁纸
   if (backgroundCustom.value) customCoverUrl.value = backgroundCustom.value;
@@ -475,6 +311,7 @@ onMounted(() => {
 <style lang="scss">
 .cover-selete {
   margin-top: 12px;
+
   .item {
     cursor: pointer;
     position: relative;
@@ -486,8 +323,10 @@ onMounted(() => {
     border-radius: 8px;
     background-color: var(--main-background-light-color);
     transition: background-color 0.3s, box-shadow 0.3s;
+
     &.check {
       background-color: var(--main-background-hover-color);
+
       &::before {
         content: "";
         position: absolute;
@@ -500,13 +339,16 @@ onMounted(() => {
         transition: opacity 0.3s;
       }
     }
+
     &:hover {
       background-color: var(--main-background-hover-color);
       box-shadow: 0 0 0px 2px var(--main-background-hover-color);
+
       &::before {
         opacity: 0;
       }
     }
+
     &:active {
       box-shadow: none;
     }
