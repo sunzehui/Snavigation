@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import { ref, nextTick, h } from "vue";
-import LinkAdd from '@/components/LinkPanel/Link/Add.vue'
 import {
   NButton,
   NScrollbar,

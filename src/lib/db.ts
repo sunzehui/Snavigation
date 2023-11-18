@@ -1,10 +1,10 @@
-import { createClient } from '@supabase/supabase-js'
+// import { createClient } from '@supabase/supabase-js'
 import Dexie, { Table } from 'dexie';
 
-export const DBClient = createClient(
-  import.meta.env.VITE_APP_SUPABASE_URL as string,
-  import.meta.env.VITE_APP_SUPABASE_KEY as string
-)
+// export const DBClient = createClient(
+//   import.meta.env.VITE_APP_SUPABASE_URL as string,
+//   import.meta.env.VITE_APP_SUPABASE_KEY as string
+// )
 
 export interface LinkPayload {
   name: string;

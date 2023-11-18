@@ -7,12 +7,13 @@ export {}
 
 declare module 'vue' {
   export interface GlobalComponents {
-    Add: typeof import('./src/components/LinkPanel/Category/Add.vue')['default']
     AllBox: typeof import('./src/components/AllFunc/AllBox.vue')['default']
     AllFunc: typeof import('./src/components/AllFunc/AllFunc.vue')['default']
     AllSet: typeof import('./src/components/AllFunc/AllSet.vue')['default']
+    CategoryAdd: typeof import('./src/components/LinkPanel/Category/CategoryAdd.vue')['default']
     Cover: typeof import('./src/components/Cover.vue')['default']
     Footer: typeof import('./src/components/Footer.vue')['default']
+    LinkAdd: typeof import('./src/components/LinkPanel/Link/LinkAdd.vue')['default']
     NButton: typeof import('naive-ui')['NButton']
     NFormItem: typeof import('naive-ui')['NFormItem']
     NInput: typeof import('naive-ui')['NInput']

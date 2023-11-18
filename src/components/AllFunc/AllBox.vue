@@ -2,7 +2,6 @@
 import ShortCut from "@/components/AllFunc/Box/ShortCut.vue";
 import { setStore, siteStore } from "@/stores";
 import { storeToRefs } from "pinia";
-import Add from "@/components/LinkPanel/Category/Add.vue";
 
 const { links, categories } = storeToRefs(siteStore())
 

@@ -1,4 +1,4 @@
-import { DBClient, LinkCategory, LinkPayload, db } from '@/lib/db';
+import { LinkCategory, LinkPayload, db } from '@/lib/db';
 
 export async function getAllLink() {
   const linkRecord = await db.links
