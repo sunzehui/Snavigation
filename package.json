@@ -31,7 +31,8 @@
     "vite": "^4.4.5",
     "vite-plugin-compression": "^0.5.1",
     "vite-plugin-pwa": "^0.16.4",
-    "vue": "^3.3.4"
+    "vue": "^3.3.4",
+    "vue-demi": "^0.14.6"
   },
   "browserslist": [
     "last 2 version",
