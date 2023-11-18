@@ -1,7 +1,9 @@
+import { parseBookmark } from '@/utils/bookmark'
 import { deleteCategory, deleteLink, getAllLink, saveLink } from "@/api/link";
 import { LinkPayload } from "@/lib/db";
 import { initial, keys } from "lodash-es";
 import { defineStore } from "pinia";
+import axios from '@/utils/request'
 
 const useSiteDataStore = defineStore("siteData", {
   state: () => {
@@ -21,7 +23,9 @@ const useSiteDataStore = defineStore("siteData", {
     },
     async initLinks() {
       const links = await getAllLink()
-      this.setLinks(links)
+      // const text = await axios.get('/bookmark.html')
+      // const links = parseBookmark(text)
+      // this.setLinks(links)
       return links
     },
     async init() {

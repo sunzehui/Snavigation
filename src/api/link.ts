@@ -1,5 +1,6 @@
 import { LinkCategory, LinkPayload, db } from '@/lib/db';
 
+import { parseBookmark } from '@/utils/bookmark'
 export async function getAllLink() {
   const linkRecord = await db.links
     .orderBy('create_time') // 按照create_time字段排序

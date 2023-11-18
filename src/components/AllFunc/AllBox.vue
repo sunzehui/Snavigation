@@ -2,7 +2,6 @@
 import ShortCut from "@/components/AllFunc/Box/ShortCut.vue";
 import { setStore, siteStore } from "@/stores";
 import { storeToRefs } from "pinia";
-
 const { links, categories } = storeToRefs(siteStore())
 
 const addCategoryModalShow = ref(false)
@@ -41,7 +40,7 @@ const handleClose = (category) => {
 
 <template>
   <div>
-    <Add v-model="addCategoryModalShow" />
+    <CategoryAdd v-model="addCategoryModalShow" />
     <n-tabs :addable="addable" :closable="closable" class="all-box" type="card" size="large"
       justify-content="space-evenly" animated v-model:value="selectedCategory" @close="handleClose" @add="handleAdd">
       <n-tab-pane v-for="l in links" :key="l.category" :name="l.category" :tab="l.category" v-if="categories.length">
