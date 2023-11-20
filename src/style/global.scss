@@ -125,17 +125,17 @@ body {
       height: auto;
       padding: 9px 16px;
       transition: background-color 0.3s;
-      --n-border: none;
-      --n-border-hover: none;
-      --n-border-focus: none;
-      --n-border-pressed: none;
-      --n-text-color-pressed: var(--main-text-color);
-      --n-color-pressed: var(--main-background-hover-color);
+      // --n-border: none;
+      // --n-border-hover: none;
+      // --n-border-focus: none;
+      // --n-border-pressed: none;
+      // --n-text-color-pressed: var(--main-text-color);
+      // --n-color-pressed: var(--main-background-hover-color);
       --n-text-color: var(--main-text-color);
       --n-text-color-hover: var(--main-text-color);
-      --n-color-focus: var(--main-background-hover-color);
-      --n-text-color-focus: var(--main-text-color);
-      --n-color-hover: var(--main-background-hover-color);
+      // --n-color-focus: var(--main-background-hover-color);
+      // --n-text-color-focus: var(--main-text-color);
+      // --n-color-hover: var(--main-background-hover-color);
     }
   }
   .n-modal {

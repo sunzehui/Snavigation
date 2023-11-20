@@ -111,7 +111,7 @@ const addOrEditShortcuts = () => {
     @mask-click="addShortcutClose">
     <n-form ref="addShortcutFormRef" :rules="addShortcutRules" :model="linkFormPayload" :label-width="80">
       <n-form-item label="链接名称" path="name">
-        <n-input clearable show-count maxlength="14" v-model:value="linkFormPayload.name" placeholder="请输入链接名称" />
+        <n-input clearable v-model:value="linkFormPayload.name" placeholder="请输入链接名称" />
       </n-form-item>
       <n-form-item label="站点链接" path="url">
         <n-input clearable v-model:value="linkFormPayload.url" placeholder="请输入站点链接" />

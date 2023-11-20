@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import ShortCut from "@/components/AllFunc/Box/ShortCut.vue";
 import { setStore, siteStore } from "@/stores";
+import { createHighlightText } from "@/utils/ui";
 import { storeToRefs } from "pinia";
 const { links, categories } = storeToRefs(siteStore())
 
@@ -23,7 +24,7 @@ const { $dialog, $message } = window
 const handleClose = (category) => {
   $dialog.warning({
     title: '警告',
-    content: '你确定删除该分组？（将会删除所有链接）',
+    content: () => createHighlightText(`你确定删除 [${category}] 分组？（将会删除所有链接）`),
     positiveText: '确定',
     negativeText: '取消',
     onPositiveClick: () => {

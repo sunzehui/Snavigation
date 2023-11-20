@@ -17,6 +17,7 @@ import {
 import { siteStore, setStore } from "@/stores";
 import SvgIcon from "@/components/SvgIcon.vue";
 import { LinkOutline } from '@vicons/ionicons5'
+import { createHighlightText } from "@/utils/ui";
 
 const props = defineProps<{
   list: any
@@ -115,7 +116,7 @@ const shortCutDropdownSelect = (key) => {
     case "delete":
       $dialog.warning({
         title: "删除捷径",
-        content: `确认删除 ${linkFromValue.value.name} 捷径？此操作将无法恢复！`,
+        content: () => createHighlightText(`确认删除 [${linkFromValue.value.name}] 捷径？删除后无法恢复！`),
         positiveText: "删除",
         negativeText: "取消",
         onPositiveClick: () => {
@@ -181,7 +182,7 @@ const shortCutJump = (url) => {
       </div>
     </Transition>
     <!-- 添加捷径 -->
-    <LinkAdd v-model:show="addShortcutModalShow" v-model:value="linkFromValue" :isEdit="addShortcutModalType" />
+    <LinkAddOrEdit v-model:show="addShortcutModalShow" v-model:value="linkFromValue" :isEdit="addShortcutModalType" />
     <!-- 捷径右键菜单 -->
     <n-dropdown placement="bottom-start" trigger="manual" size="large" :x="shortCutDropdownX" :y="shortCutDropdownY"
       :options="shortCutDropdownOptions" :show="shortCutDropdownShow" :on-clickoutside="

@@ -14,6 +14,7 @@ declare module 'vue' {
     Cover: typeof import('./src/components/Cover.vue')['default']
     Footer: typeof import('./src/components/Footer.vue')['default']
     LinkAdd: typeof import('./src/components/LinkPanel/Link/LinkAdd.vue')['default']
+    LinkAddOrEdit: typeof import('./src/components/LinkPanel/Link/LinkAddOrEdit.vue')['default']
     NButton: typeof import('naive-ui')['NButton']
     NCard: typeof import('naive-ui')['NCard']
     NEllipsis: typeof import('naive-ui')['NEllipsis']
